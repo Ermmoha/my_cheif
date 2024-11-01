@@ -93,12 +93,10 @@ fun HorizontalCardsPager() {
             shape = RoundedCornerShape(15.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
-            // Используем Box для наложения текста на изображение
             Box(modifier = Modifier.fillMaxSize()
             ) {
                 val image = GetImageForPage(infinitePage(page))
 
-                // Изображение
                 Image(
                     painter = image,
                     contentDescription = "Card $page",
@@ -135,7 +133,7 @@ fun HorizontalCardsPager() {
     }
 }
 
-// Функция для получения текста для каждой страницы
+
 @Composable
 fun GetTextForPage(page: Int): String {
     return when (page) {
@@ -206,8 +204,8 @@ fun CardView(
             Image(
                 painter = image,
                 contentDescription = null,
-                contentScale = ContentScale.Crop, // Используйте Crop или FillBounds
-                modifier = Modifier.fillMaxSize() // Заставляет изображение занимать всю площадь карточки
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
             // Затемнённый фон
             Box(
@@ -223,7 +221,7 @@ fun CardView(
                         )
                     )
             )
-            // Текст
+
             Text(
                 text = title,
                 color = Color.White,
