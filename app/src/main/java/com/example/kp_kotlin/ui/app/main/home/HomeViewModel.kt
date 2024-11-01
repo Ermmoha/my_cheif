@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,12 +23,16 @@ class HomeViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
-        getAllRecipes()
+        initializeRecipes()
     }
 
-    private fun getAllRecipes() {
+    private fun initializeRecipes() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val existingRecipesCount = repository.getAllRecipes().first().size
+                if (existingRecipesCount == 0) {
+                    repository.insertInitialRecipes()
+                }
                 repository.getAllRecipes().collect { list ->
                     _state.update { it.copy(recipeList = list) }
                 }

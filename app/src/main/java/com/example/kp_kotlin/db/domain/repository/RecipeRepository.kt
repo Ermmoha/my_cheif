@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface RecipeRepository{
     suspend fun insertNewRecipe(recipe: Recipe)
 
+    suspend fun insertInitialRecipes()
+
     suspend fun updateRecipe(recipe: Recipe)
 
     suspend fun getRecipesByCategory(category: String): Flow<List<Recipe>>

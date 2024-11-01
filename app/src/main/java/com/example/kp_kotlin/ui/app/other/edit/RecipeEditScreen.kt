@@ -1,5 +1,6 @@
 package com.example.kp_kotlin.ui.app.other.edit
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,9 +51,11 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import coil.compose.rememberAsyncImagePainter
 import com.example.kp_kotlin.R
-import com.example.kp_kotlin.ui.app.other.creation.saveImageToInternalStorage
+import com.example.kp_kotlin.ui.app.other.edit.EditDestination.cardId
 import com.example.kp_kotlin.ui.navigation.NavigationDestination
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 object EditDestination : NavigationDestination {
     var cardId = 0
@@ -266,7 +269,6 @@ fun RecipeEditScreen(
                 onValueChange = { viewModel.updateState(state.recipe.copy(steps = it)) },
                 label = { Text("Описание шага") },
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 3
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -279,12 +281,31 @@ fun RecipeEditScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.dark_green))
             ) {
                 Text(
-                    text = "Сохранить изменения",
+                    text = if (cardId != 0)"Сохранить изменения" else "Создать рецепт",
                     fontFamily = FontFamily(Font(R.font.six)),
                     fontSize = 20.sp,
                 )
             }
         }
     }
+}
+
+fun saveImageToInternalStorage(context: Context, uri: Uri, fileName: String): String? {
+    try {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val file = File(context.filesDir, fileName)
+        val outputStream = FileOutputStream(file)
+
+        inputStream?.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        return file.absolutePath
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
 }
 

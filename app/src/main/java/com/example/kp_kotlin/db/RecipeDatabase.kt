@@ -7,7 +7,7 @@ import com.example.kp_kotlin.db.domain.repository.RecipeDao
 
 @Database(
     entities = [Recipe::class],
-    version = 3,
+    version = 6,
     exportSchema = false
 )
 abstract class RecipeDatabase : RoomDatabase() {

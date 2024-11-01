@@ -51,7 +51,7 @@ object LikeDestination : NavigationDestination {
 fun LikeScreen(
     viewModel: LikeViewModel,
     navigateToCard: (Int) -> Unit,
-    navigateToCreation: (Int) -> Unit
+    navigateToEdit: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -60,7 +60,7 @@ fun LikeScreen(
         // Передаем функции для навигации
         CardScreen(
             navigateToCard = navigateToCard,
-            navigateToCreation = navigateToCreation,
+            navigateToCreation = navigateToEdit,
             viewModel = viewModel
             )
 
@@ -164,7 +164,7 @@ fun CardItem(
                 .fillMaxSize()
         ) {
             Image(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxSize(),
                 painter = image,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,

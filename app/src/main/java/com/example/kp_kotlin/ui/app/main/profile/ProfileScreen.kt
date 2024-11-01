@@ -39,7 +39,7 @@ object ProfileDestination : NavigationDestination {
 fun ProfileScreen(
     navigateToAbout: () -> Unit,
     navigateToReg: () -> Unit,
-    navigateToCreation: () -> Unit
+    navigateToEdit: (Int) -> Unit
 ) {
 
     Column(
@@ -78,7 +78,7 @@ fun ProfileScreen(
         )
 
         Spacer(modifier = Modifier.height(30.dp))
-        ProfileCardItem(title = "Создать рецепт", navigateToCreation)
+        ProfileCardItem(title = "Создать рецепт") { navigateToEdit(0) }
 
         Spacer(modifier = Modifier.height(8.dp))
         ProfileCardItem(title = "О нас", navigateToAbout)
@@ -118,7 +118,7 @@ fun ProfileCardItem(title: String, onClick: () -> Unit) {
 @Composable
 fun PreviewProfileScreen() {
 ProfileScreen(
-    navigateToCreation = {},
+    navigateToEdit = {},
     navigateToAbout = {},
     navigateToReg = {}
 )

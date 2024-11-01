@@ -16,11 +16,14 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNewRecipe(recipe: Recipe)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertInitialRecipes(recipes: List<Recipe>)
+
     // Обновить рецепт
     @Update
     suspend fun updateRecipe(recipe: Recipe)
 
-    // Удалить рецепт
+        // Удалить рецепт
     @Delete
     suspend fun deleteRecipe(recipe: Recipe)
 

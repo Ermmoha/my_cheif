@@ -160,7 +160,6 @@ fun CardViews(
     navigateToCard: (Int) -> Unit
 ){
     val state by viewModel.state.collectAsState()
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.Top,
@@ -192,24 +191,25 @@ fun CardView(
     image: AsyncImagePainter,
     title: String,
     navigateToCard: (Int) -> Unit
-){
+) {
     Card(
-        onClick = {navigateToCard(id)},
+        onClick = { navigateToCard(id) },
         modifier = Modifier
             .height(150.dp)
             .width(230.dp)
             .padding(3.dp)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
+
             Image(
-                modifier = Modifier,
                 painter = image,
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop, // Используйте Crop или FillBounds
+                modifier = Modifier.fillMaxSize() // Заставляет изображение занимать всю площадь карточки
             )
+            // Затемнённый фон
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -223,10 +223,11 @@ fun CardView(
                         )
                     )
             )
+            // Текст
             Text(
                 text = title,
                 color = Color.White,
-                maxLines = 1,
+                maxLines = 2,
                 fontSize = 23.sp,
                 fontFamily = FontFamily(Font(R.font.six)),
                 fontWeight = FontWeight.Bold,
@@ -238,5 +239,6 @@ fun CardView(
         }
     }
 }
+
 
 
