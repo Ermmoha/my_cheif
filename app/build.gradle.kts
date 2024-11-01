@@ -6,6 +6,7 @@ plugins {
 
 }
 
+
 android {
     namespace = "com.example.kp_kotlin"
     compileSdk = 34

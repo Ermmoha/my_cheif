@@ -29,9 +29,6 @@ import com.example.kp_kotlin.ui.app.other.category.CategoryDestination
 import com.example.kp_kotlin.ui.app.other.category.CategoryDestination.title
 import com.example.kp_kotlin.ui.app.other.category.CategoryScreen
 import com.example.kp_kotlin.ui.app.other.category.CategoryViewModel
-import com.example.kp_kotlin.ui.app.other.creation.CreationDestination
-import com.example.kp_kotlin.ui.app.other.creation.RecipeCreationScreen
-import com.example.kp_kotlin.ui.app.other.creation.RecipeCreationViewModel
 import com.example.kp_kotlin.ui.app.other.edit.EditDestination
 import com.example.kp_kotlin.ui.app.other.edit.RecipeEditScreen
 import com.example.kp_kotlin.ui.app.other.edit.RecipeEditViewModel
@@ -130,7 +127,10 @@ fun ChiefNavGraph(
             ProfileScreen(
                 navigateToAbout = {navController.navigate(AboutDestination.route)},
                 navigateToReg = {navController.navigate(RegistrationDestination.route)},
-                navigateToCreation = {navController.navigate(CreationDestination.route)}
+                navigateToEdit = {
+                    navController.navigate(EditDestination.route)
+                    EditDestination.cardId = 0
+                }
 
             )
         }
@@ -138,7 +138,7 @@ fun ChiefNavGraph(
             val likeViewModel = hiltViewModel<LikeViewModel>()
             LikeScreen(
                 viewModel = likeViewModel,
-                navigateToCreation = {
+                navigateToEdit = {
                     navController.navigate(EditDestination.route)
                     EditDestination.cardId = 0
                                      },
@@ -163,13 +163,6 @@ fun ChiefNavGraph(
             )
         }
 
-        composable(route = CreationDestination.route) {
-            val viewModel = hiltViewModel<RecipeCreationViewModel>()
-            RecipeCreationScreen(
-                viewModel = viewModel,
-                navigateBack = {navController.popBackStack()}
-            )
-        }
         composable(route = CategoryDestination.route) {
             val viewModel = hiltViewModel<CategoryViewModel>()
             CategoryScreen(

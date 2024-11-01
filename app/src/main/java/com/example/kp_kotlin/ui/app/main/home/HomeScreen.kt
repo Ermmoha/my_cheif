@@ -160,7 +160,6 @@ fun CardViews(
     navigateToCard: (Int) -> Unit
 ){
     val state by viewModel.state.collectAsState()
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.Top,
