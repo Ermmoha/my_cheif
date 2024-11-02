@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -94,28 +95,30 @@ fun CardPreview(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-
-            // Название рецепта
             item {
                 Text(
-                    text = "Название рецепта: ${state.recipe.firstName}",
+                    text = state.recipe.firstName,
                     fontFamily = FontFamily(Font(R.font.four)),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
+
             // Описание рецепта
             item {
                 Text(
                     text = "Описание:",
                     fontFamily = FontFamily(Font(R.font.four)),
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    )
                 Text(
                     text = state.recipe.description,
                     fontFamily = FontFamily(Font(R.font.four)),
-                )
+                    fontSize = 18.sp,
+                    )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -124,7 +127,9 @@ fun CardPreview(
                 Text(
                     text = "Категория: ${state.recipe.category}",
                     fontFamily = FontFamily(Font(R.font.four)),
-                )
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -133,7 +138,8 @@ fun CardPreview(
                 Text(
                     text = "Время приготовления: ${state.recipe.cookingHours} ч. ${state.recipe.cookingMinutes} мин.",
                     fontFamily = FontFamily(Font(R.font.four)),
-                )
+                    fontSize = 18.sp,
+                    )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -142,15 +148,17 @@ fun CardPreview(
                 Text(
                     text = "Ингредиенты:",
                     fontFamily = FontFamily(Font(R.font.four)),
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    )
                 Spacer(modifier = Modifier.height(8.dp))
             }
             item {
                 Text(
                     text = state.recipe.ingredients,
                     fontFamily = FontFamily(Font(R.font.four)),
-                )
+                    fontSize = 18.sp,
+                    )
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
@@ -159,15 +167,17 @@ fun CardPreview(
                 Text(
                     text = "Шаги приготовления:",
                     fontFamily = FontFamily(Font(R.font.four)),
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                    )
                 Spacer(modifier = Modifier.height(8.dp))
             }
             item {
                 Text(
                     text = state.recipe.steps,
                     fontFamily = FontFamily(Font(R.font.four)),
-                )
+                    fontSize = 18.sp,
+                    )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
