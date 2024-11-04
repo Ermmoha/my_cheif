@@ -23,7 +23,7 @@ interface RecipeDao {
     @Update
     suspend fun updateRecipe(recipe: Recipe)
 
-        // Удалить рецепт
+    // Удалить рецепт
     @Delete
     suspend fun deleteRecipe(recipe: Recipe)
 
@@ -31,6 +31,7 @@ interface RecipeDao {
     @Query("SELECT * from recipes WHERE id = :id")
     fun getRecipe(id: Int): Flow<Recipe>
 
+    //Получить рецепт по категории
     @Query("SELECT * from recipes WHERE category = :category")
     fun getRecipesByCategory(category: String):Flow<List<Recipe>>
 

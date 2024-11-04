@@ -1,14 +1,33 @@
 package com.example.kp_kotlin.ui.auth.signUp
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.* // Для разметки и отступов
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.* // Материальные компоненты
-import androidx.compose.runtime.* // Состояния
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kp_kotlin.R
 import com.example.kp_kotlin.ui.navigation.NavigationDestination
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.auth
 
 object RegistrationDestination : NavigationDestination {
     override val title = "Регистрация"
@@ -36,7 +59,8 @@ object RegistrationDestination : NavigationDestination {
     fun RegistrationScreen(
         navigateToAut: () -> Unit
     ) {
-        // Состояния для хранения пользовательского ввода
+        val auth = Firebase.auth
+        var showDialog by remember { mutableStateOf(false) }
         var name by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
@@ -45,14 +69,13 @@ object RegistrationDestination : NavigationDestination {
 
         Box(
             modifier = Modifier
-                .fillMaxSize() // Занимает весь экран
+                .fillMaxSize()
         ) {
-            // Фоновое изображение
             Image(
-                painter = painterResource(id = R.drawable.fon_reg), // Ваше изображение в папке drawable
-                contentDescription = null, // Описание для доступности (null, если не нужно)
-                modifier = Modifier.fillMaxSize(), // Изображение заполняет весь контейнер
-                contentScale = ContentScale.Crop // Обрезка изображения, чтобы оно заполнило контейнер
+                painter = painterResource(id = R.drawable.fon_reg),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
 
             Column(
@@ -61,7 +84,7 @@ object RegistrationDestination : NavigationDestination {
                     .background(color = Color.Black.copy(alpha = 0.5f))
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center // Центрирование по вертикали
+                verticalArrangement = Arrangement.Center
             ) {
 
                 Text(
@@ -135,7 +158,7 @@ object RegistrationDestination : NavigationDestination {
                         keyboardType = KeyboardType.Password
                     ),
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation() // Преобразование для пароля
+                    visualTransformation = PasswordVisualTransformation()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -166,18 +189,43 @@ object RegistrationDestination : NavigationDestination {
                     Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
-
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text("Регистрация успешна!") },
+                        text = { Text("Вы успешно зарегистрировались.") },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                showDialog = false
+                                navigateToAut()
+                            }) {
+                                Text("OK")
+                            }
+                        })
+                }
                 Button(
                     onClick = {
                         errorMessage = ""
                         when {
-                            name.isEmpty() -> errorMessage = "Name is required"
-                            email.isEmpty() -> errorMessage = "Email is required"
+                            name.isEmpty() -> errorMessage = "Имя не может быть пустым"
+                            email.isEmpty() -> errorMessage = "Email не может быть пустым"
+                            password.length < 6 -> errorMessage = "Длина пароля должна быть не менее 6 символов"
                             !isValidEmail(email) -> errorMessage =
-                                "Invalid email format" // Проверка email
-                            password.isEmpty() -> errorMessage = "Password is required"
-                            password != confirmPassword -> errorMessage = "Passwords do not match"
-                            else -> navigateToAut()
+                                "Неверный формат Email "
+                            password.isEmpty() -> errorMessage = "Пароль не может быть пустым"
+                            password != confirmPassword -> errorMessage = "Пароли различаются"
+                            else -> {
+                                signUp(
+                                    auth = auth,
+                                    email = email,
+                                    name = name,
+                                    password = password,
+                                    onSuccess = {
+                                        showDialog = true
+                                    },
+                                    onFailure = { error -> errorMessage = error }
+                                )
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -195,6 +243,36 @@ object RegistrationDestination : NavigationDestination {
             }
         }
     }
+
+private fun signUp(
+    auth: FirebaseAuth,
+    email: String,
+    name: String,
+    password: String,
+    onSuccess: () -> Unit,
+    onFailure: (String) -> Unit,
+){
+    auth.createUserWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = auth.currentUser
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                    .setDisplayName(name)
+                    .build()
+                user?.updateProfile(profileUpdates)
+                    ?.addOnCompleteListener { profileTask ->
+                        if (profileTask.isSuccessful) {
+                            Log.d("MyLog", "Регистрация прошла успешно!")
+                            onSuccess()
+                        }
+                    }
+            } else {
+                val errorMessage = "Не удалось создать аккаунт"
+                Log.d("MyLog", "Регистрация не удалась")
+                onFailure(errorMessage)
+            }
+        }
+}
 
     // Функция для проверки валидности email
     fun isValidEmail(email: String): Boolean {

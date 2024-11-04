@@ -32,9 +32,10 @@ fun MyBottomAppBar(
     navigateToLike: () -> Unit,
     navigateToCatalogue: () -> Unit,
     navigateToProfile: () -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    index: Int
 ){
-    var selectedItemIndex by remember { mutableIntStateOf(1) }
+    var selectedItemIndex by remember { mutableIntStateOf(index) }
 
     BottomAppBar(
         modifier = Modifier
@@ -104,7 +105,7 @@ fun MyBottomAppBar(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Profile",
                             modifier = Modifier.size(30.dp),
-                            tint = if (selectedItemIndex == 4) Color.Blue else Color.Gray
+                            tint = if (selectedItemIndex == 4) colorResource(id = R.color.black) else Color.Gray
                         )
                     }
                 )

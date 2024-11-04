@@ -152,7 +152,6 @@ fun RecipeEditScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Описание рецепта
             OutlinedTextField(
                 value = state.recipe.description,
                 keyboardOptions = KeyboardOptions(
@@ -199,7 +198,6 @@ fun RecipeEditScreen(
 
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            // Время приготовления
             Text(
                 text = "Время приготовления",
                 fontFamily = FontFamily(Font(R.font.four)),
@@ -209,7 +207,6 @@ fun RecipeEditScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Активное время готовки
             Row(modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(
                     value = state.recipe.cookingHours,
@@ -242,7 +239,6 @@ fun RecipeEditScreen(
 
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            // Ингредиенты
             Text(
                 text = "Ингредиенты",
                 fontFamily = FontFamily(Font(R.font.four)),

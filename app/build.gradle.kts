@@ -1,9 +1,9 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
-
 }
 
 
@@ -56,6 +56,7 @@ android {
 val navVersion: String by project
 val roomVersion: String by project
 val daggerVersion: String by project
+val fireBaseVersion: String by project
 
 dependencies {
 
@@ -90,5 +91,9 @@ dependencies {
 
     implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:$fireBaseVersion"))
+    implementation ("com.google.firebase:firebase-auth-ktx")
 
 }

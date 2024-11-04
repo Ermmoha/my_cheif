@@ -11,7 +11,6 @@ import com.example.kp_kotlin.db.domain.repository.RecipeDao
     exportSchema = false
 )
 abstract class RecipeDatabase : RoomDatabase() {
-
     // Возвращает DAO для работы с рецептами
     abstract fun getRecipeDao(): RecipeDao
 

@@ -57,7 +57,6 @@ fun LikeScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // Передаем функции для навигации
         CardScreen(
             navigateToCard = navigateToCard,
             navigateToCreation = navigateToEdit,
@@ -77,7 +76,6 @@ fun CardRow(
     navigateToCreation: (Int) -> Unit
 ) {
     Column {
-        // Заголовок секции
         Text(
             text = title,
             fontSize = 30.sp,
@@ -86,7 +84,6 @@ fun CardRow(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp)
         )
 
-        // Горизонтальный список карточек
         LazyRow(
             modifier = Modifier.padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),

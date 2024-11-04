@@ -62,9 +62,12 @@ fun HomeScreen(
         )
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HorizontalCardsPager() {
-    val pageCount = 2
+fun HorizontalCardsPager(
+    navigateToCard: (Int) -> Unit,
+) {
+    val pageCount = 3
     val pagerState = rememberPagerState { Int.MAX_VALUE }
 
     // Циклический индекс для поддержки бесконечной прокрутки
@@ -79,13 +82,15 @@ fun HorizontalCardsPager() {
             .height(200.dp),
         contentPadding = PaddingValues(20.dp,10.dp)
     ) { page ->
-        val clickAction: () -> Unit = when (infinitePage(page)) {
-            0 -> { {   } }
-            1 -> { {  } }
+        val clickAction: (navigateToCard: (Int) -> Unit) -> Unit = when (infinitePage(page)) {
+            0 -> { {  navigateToCard(17) } }
+            1 -> { { navigateToCard(4) } }
+            2 -> { { navigateToCard(6) } }
             else -> { {  }
             }
         }
         Card(
+            onClick = { clickAction((navigateToCard)) },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
@@ -93,7 +98,8 @@ fun HorizontalCardsPager() {
             shape = RoundedCornerShape(15.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
-            Box(modifier = Modifier.fillMaxSize()
+            Box(modifier = Modifier
+                .fillMaxSize()
             ) {
                 val image = GetImageForPage(infinitePage(page))
 
@@ -117,15 +123,14 @@ fun HorizontalCardsPager() {
 
                 )
 
-                // Текст поверх изображения
                 Text(
                     text = GetTextForPage(infinitePage(page)),
                     fontFamily = FontFamily(Font(R.font.six)),
                     fontSize = 25.sp,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter) // Выравнивание текста
-                        .padding(8.dp), // Отступы вокруг текста
-                    color = Color.White, // Цвет текста (можно изменить)
+                        .align(Alignment.BottomCenter)
+                        .padding(8.dp),
+                    color = Color.White,
                     textAlign = TextAlign.Center
                 )
             }
@@ -137,8 +142,9 @@ fun HorizontalCardsPager() {
 @Composable
 fun GetTextForPage(page: Int): String {
     return when (page) {
-        0 -> "Топ 5 кулинарных лайфхаков"
-        1 -> "Добро пожаловать"
+        0 -> "Просто и со вкусом"
+        1 -> "Быстрый и вкусный завтрак"
+        2 -> "Изысканый рай"
 
         else -> ""
     }
@@ -147,8 +153,10 @@ fun GetTextForPage(page: Int): String {
 @Composable
 fun GetImageForPage(page: Int): Painter {
     return when (page) {
-        0 -> painterResource(id = R.drawable.pager1)
-        1 -> painterResource(id = R.drawable.fon_reg)
+        0 -> painterResource(id = R.drawable.recipe17)
+        1 -> painterResource(id = R.drawable.recipe4)
+        2 -> painterResource(id = R.drawable.recipe7)
+
         else -> painterResource(id = R.drawable.reg_screen)
     }
 }
@@ -165,7 +173,11 @@ fun CardViews(
             .fillMaxSize()
 
     ) {
-        item(span = { GridItemSpan(2) }){ HorizontalCardsPager() }
+        item(
+            span = { GridItemSpan(2) }
+        ) {
+                HorizontalCardsPager(navigateToCard = navigateToCard)
+        }
         item (span = { GridItemSpan(2) }){ Text(
             text = "Рецепты",
             fontFamily = FontFamily(Font(R.font.six)),
@@ -207,7 +219,6 @@ fun CardView(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-            // Затемнённый фон
             Box(
                 modifier = Modifier
                     .fillMaxSize()

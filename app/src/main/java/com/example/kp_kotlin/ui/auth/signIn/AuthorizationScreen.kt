@@ -1,5 +1,6 @@
 package com.example.kp_kotlin.ui.auth.signIn
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,8 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -42,7 +44,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kp_kotlin.R
+import com.example.kp_kotlin.ui.auth.signUp.isValidEmail
 import com.example.kp_kotlin.ui.navigation.NavigationDestination
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 object AuthorizationDestination : NavigationDestination {
     override val title = "Авторизация"
@@ -54,22 +60,22 @@ fun AuthorizationScreen(
     navigateToHome: () -> Unit,
     navigateToReg: () -> Unit
 ) {
-    // Состояния для хранения пользовательского ввода
-    var name by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val auth = Firebase.auth
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
-            .fillMaxSize() // Занимает весь экран
+            .fillMaxSize()
     ) {
-        // Фоновое изображение
+
         Image(
-            painter = painterResource(id = R.drawable.fon_reg), // Ваше изображение в папке drawable
-            contentDescription = null, // Описание для доступности (null, если не нужно)
-            modifier = Modifier.fillMaxSize(), // Изображение заполняет весь контейнер
-            contentScale = ContentScale.Crop // Обрезка изображения, чтобы оно заполнило контейнер
+            painter = painterResource(id = R.drawable.fon_reg),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
 
 
@@ -79,7 +85,7 @@ fun AuthorizationScreen(
             .background(color = Color.Black.copy(alpha = 0.5f))
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center // Центрирование по вертикали
+        verticalArrangement = Arrangement.Center
     )
     {
         Text(text = "Добро пожаловать",
@@ -92,12 +98,12 @@ fun AuthorizationScreen(
 
         )
         Image(
-            painter = painterResource(id = R.drawable.reg_screen), // Замените на ваш ресурс
-            contentDescription = "My image description", // Описание изображения для доступности
+            painter = painterResource(id = R.drawable.reg_screen),
+            contentDescription = null,
             modifier = Modifier
-                .fillMaxWidth() // Заполнение ширины
-                .height(300.dp), // Высота изображения
-            contentScale = ContentScale.FillHeight // Как изображение будет обрезано
+                .fillMaxWidth()
+                .height(300.dp),
+            contentScale = ContentScale.FillHeight
         )
 
         Text(
@@ -111,15 +117,15 @@ fun AuthorizationScreen(
 
         TextField(
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Person,
-                    contentDescription = "Login",
+                Icon(imageVector = Icons.Default.Email,
+                    contentDescription = "Email",
                     tint = colorResource(R.color.gold)
                 )
             },
             singleLine = true,
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Логин") },
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
             ),
@@ -161,9 +167,15 @@ fun AuthorizationScreen(
             onClick = {
                 errorMessage = ""
                 when {
-                    name.isEmpty() -> errorMessage = "Name is required"
-                    password.isEmpty() -> errorMessage = "Password is required"
-                    else -> navigateToHome()
+                    email.isEmpty() -> errorMessage = "Email не может быть пустым"
+                    !isValidEmail(email) -> errorMessage = "Неверный формат Email"
+                    password.isEmpty() -> errorMessage = "Пароль не может быть пустым"
+                    else -> {
+                        signIn(auth, email, password,
+                            onSuccess = { navigateToHome() },
+                            onFailure = { error -> errorMessage = error }
+                        )
+                    }
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.dark_green)),
@@ -186,6 +198,26 @@ fun AuthorizationScreen(
         }
     }
 }
+}
+
+private fun signIn(
+    auth: FirebaseAuth,
+    email: String,
+    password: String,
+    onSuccess: () -> Unit,
+    onFailure: (String) -> Unit
+) {
+    auth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("Log", "Вход выполнен успешно!")
+                onSuccess()
+            } else {
+                val errorMessage = "Неверный логин или пароль"
+                Log.d("Log", "Не удалось войти в аккаунт")
+                onFailure(errorMessage)
+            }
+        }
 }
 
 @Preview(showBackground = true)

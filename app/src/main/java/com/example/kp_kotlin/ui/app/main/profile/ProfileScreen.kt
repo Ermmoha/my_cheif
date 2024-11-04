@@ -29,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kp_kotlin.R
 import com.example.kp_kotlin.ui.navigation.NavigationDestination
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 object ProfileDestination : NavigationDestination {
     override val title = "Профиль"
@@ -41,6 +44,9 @@ fun ProfileScreen(
     navigateToReg: () -> Unit,
     navigateToEdit: (Int) -> Unit
 ) {
+    val auth = Firebase.auth
+    val name = auth.currentUser?.displayName
+    val email = auth.currentUser?.email
 
     Column(
         modifier = Modifier
@@ -48,7 +54,6 @@ fun ProfileScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Картинка профиля
         Image(
             painter = painterResource(id = R.drawable.kolpak),
             contentDescription = "Аватарка",
@@ -58,21 +63,23 @@ fun ProfileScreen(
                 .clip(CircleShape) // Делает изображение круглым
                 .border(2.dp, Color.Gray, CircleShape)
         )
-
-        // Ник пользователя
+        
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Ник пользователя",
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily(Font(R.font.two))
+            Text(
+                text =
+                if (name != null) name
+                 else "Имя пользователя",
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily(Font(R.font.six))
 
-        )
+            )
 
-        // Почта пользователя
+
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "user@example.com",
+            text = if (email != null) email
+            else "user@example.com",
             fontSize = 16.sp,
             color = Color.Gray
         )
@@ -84,7 +91,10 @@ fun ProfileScreen(
         ProfileCardItem(title = "О нас", navigateToAbout)
 
         Spacer(modifier = Modifier.height(8.dp))
-        ProfileCardItem(title = "Выйти", navigateToReg)
+        ProfileCardItem(title = "Выйти") {
+            singOut(auth)
+            navigateToReg()
+        }
     }
 }
 
@@ -112,6 +122,10 @@ fun ProfileCardItem(title: String, onClick: () -> Unit) {
             )
         }
     }
+}
+
+private fun singOut(auth: FirebaseAuth){
+    auth.signOut()
 }
 
 @Preview(showBackground = true)

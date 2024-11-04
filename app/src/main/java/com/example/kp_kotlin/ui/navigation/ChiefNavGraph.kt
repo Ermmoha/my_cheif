@@ -38,11 +38,19 @@ import com.example.kp_kotlin.ui.auth.signUp.RegistrationDestination
 import com.example.kp_kotlin.ui.auth.signUp.RegistrationScreen
 import com.example.kp_kotlin.ui.components.MyBottomAppBar
 import com.example.kp_kotlin.ui.components.TopBarWithTitle
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun ChiefNavGraph(
     navController: NavHostController
 ) {
+    val auth = Firebase.auth
+    val startDestination = if (auth.currentUser != null) {
+        HomeDestination.route
+    } else {
+        AuthorizationDestination.route
+    }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
@@ -83,7 +91,14 @@ fun ChiefNavGraph(
                     navigateToLike = { navController.navigate(LikeDestination.route) },
                     navigateToCatalogue = { navController.navigate(CatalogueDestination.route) },
                     navigateToProfile = { navController.navigate(ProfileDestination.route) },
-                    navigateToHome = { navController.navigate(HomeDestination.route) }
+                    navigateToHome = { navController.navigate(HomeDestination.route) },
+                    index = when (currentRoute) {
+                        HomeDestination.route -> 1
+                        LikeDestination.route -> 3
+                        CatalogueDestination.route -> 2
+                        ProfileDestination.route -> 4
+                    else -> 0
+                    },
                 )
             }
         }
@@ -91,7 +106,7 @@ fun ChiefNavGraph(
      { contentPadding ->
     NavHost(
         navController = navController,
-        startDestination = HomeDestination.route,
+        startDestination = startDestination,
         modifier = Modifier.padding(contentPadding)
     ) {
         composable(route = CatalogueDestination.route,) {
