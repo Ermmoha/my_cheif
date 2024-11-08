@@ -248,6 +248,3 @@ fun CardView(
         }
     }
 }
-
-
-

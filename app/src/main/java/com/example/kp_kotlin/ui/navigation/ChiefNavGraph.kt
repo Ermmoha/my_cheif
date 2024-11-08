@@ -126,7 +126,9 @@ fun ChiefNavGraph(
         }
         composable(route = RegistrationDestination.route) {
             RegistrationScreen(
-                navigateToAut = { navController.navigate(AuthorizationDestination.route) })
+                navigateToAut = { navController.navigate(AuthorizationDestination.route) },
+                navigateToHome = {navController.navigate(HomeDestination.route)}
+            )
         }
         composable(route = HomeDestination.route) {
             val homeViewModel = hiltViewModel<HomeViewModel>()

@@ -57,7 +57,8 @@ object RegistrationDestination : NavigationDestination {
 
     @Composable
     fun RegistrationScreen(
-        navigateToAut: () -> Unit
+        navigateToAut: () -> Unit,
+        navigateToHome: () -> Unit
     ) {
         val auth = Firebase.auth
         var showDialog by remember { mutableStateOf(false) }
@@ -197,7 +198,7 @@ object RegistrationDestination : NavigationDestination {
                         confirmButton = {
                             TextButton(onClick = {
                                 showDialog = false
-                                navigateToAut()
+                                navigateToHome()
                             }) {
                                 Text("OK")
                             }
@@ -209,10 +210,9 @@ object RegistrationDestination : NavigationDestination {
                         when {
                             name.isEmpty() -> errorMessage = "Имя не может быть пустым"
                             email.isEmpty() -> errorMessage = "Email не может быть пустым"
-                            password.length < 6 -> errorMessage = "Длина пароля должна быть не менее 6 символов"
-                            !isValidEmail(email) -> errorMessage =
-                                "Неверный формат Email "
                             password.isEmpty() -> errorMessage = "Пароль не может быть пустым"
+                            password.length < 6 -> errorMessage = "Длина пароля должна быть не менее 6 символов"
+                            !isValidEmail(email) -> errorMessage = "Неверный формат Email"
                             password != confirmPassword -> errorMessage = "Пароли различаются"
                             else -> {
                                 signUp(
@@ -284,5 +284,8 @@ private fun signUp(
     @Preview(showBackground = true)
     @Composable
     fun RegistrationScreenPreview() {
-        RegistrationScreen({})
+        RegistrationScreen(
+            navigateToHome = {},
+            navigateToAut = {}
+        )
     }

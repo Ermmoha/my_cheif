@@ -107,7 +107,7 @@ fun CardRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
-                                    .clickable { navigateToCreation(0) }, // Вызов функции создания рецепта
+                                    .clickable { navigateToCreation(0) },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -208,15 +208,15 @@ fun CardScreen(
             title = "Ваши рецепты",
             showUploadItem = true,
             navigateToCard = navigateToCard,
-            navigateToCreation = navigateToCreation // Передаем функцию для создания рецепта
+            navigateToCreation = navigateToCreation
         )
 
         CardRow(
             recipeList = state.recipeFavoriteList,
             title = "Любимое",
             showUploadItem = false,
-            navigateToCard = navigateToCard, // Передаем функцию для карточек
-            navigateToCreation = navigateToCreation // Не используется в этой секции
+            navigateToCard = navigateToCard,
+            navigateToCreation = navigateToCreation
         )
     }
 }

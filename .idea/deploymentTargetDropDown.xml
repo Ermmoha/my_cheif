@@ -2,7 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="HomeScreenPreview">
+      <entry key="AuthorizationScreenTest">
+        <State />
+      </entry>
+      <entry key="RegistrationScreenTest">
         <State />
       </entry>
       <entry key="app">
@@ -20,6 +23,15 @@
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-11-02T10:54:27.496955700Z" />
         </State>
+      </entry>
+      <entry key="testLoginWithIncorrectData()">
+        <State />
+      </entry>
+      <entry key="testRegistrationWithEmptyPassword() (1)">
+        <State />
+      </entry>
+      <entry key="testRegistrationWithInvalidEmail()">
+        <State />
       </entry>
     </value>
   </component>
